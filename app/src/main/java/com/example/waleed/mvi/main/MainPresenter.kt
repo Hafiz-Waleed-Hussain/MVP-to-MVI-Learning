@@ -11,6 +11,7 @@ class MainPresenter(private val view: MainViewContract, private val repo: GitHub
 
         view.showProgress()
         view.hideData()
+        view.hideError()
         repo.users.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
