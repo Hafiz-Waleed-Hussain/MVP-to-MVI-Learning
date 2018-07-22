@@ -7,20 +7,35 @@ import io.reactivex.schedulers.Schedulers
 
 class MainPresenter(private val view: MainViewContract, private val repo: GitHubRepository) : MainActionContract {
 
-    override fun loadData() {
+    private val mainState = MainViewState()
 
-        view.showProgress()
-        view.hideData()
-        view.hideError()
-        repo.users.observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    view.showData(it)
-                    view.hideProgress()
-                }, {
-                    view.showError()
-                    view.hideProgress()
-                })
+    init {
+        val observable = view.buttonClick().flatMap {
+            repo.getUsers().startWith { PartialViewState.ProgressState }
+        }
+
+                observable.subscribe { view.render(reduce(it)) }
+//        view.buttonClick().flatMap {
+//            repo.getUsers().doOnSubscribe {
+//                view.render(reduce(PartialViewState.ProgressState))
+//            }.onErrorReturn {
+//
+//            }
+//        }
+//                .subscribe({
+//                    view.render(reduce(PartialViewState.FetchedData(it)))
+//                }, {
+//                    view.render(reduce(PartialViewState.ErrorState))
+//                })
+    }
+
+
+    private fun reduce(partialViewState: PartialViewState): MainViewState {
+        return when (partialViewState) {
+            PartialViewState.ProgressState -> mainState.copy(progress = true)
+            PartialViewState.ErrorState -> mainState.copy(error = true)
+            is PartialViewState.FetchedData -> mainState.copy(data = partialViewState.data)
+        }
     }
 
 

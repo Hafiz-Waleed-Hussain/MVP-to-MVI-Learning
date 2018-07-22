@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 /**
  * Created by waleed on 22/07/2017.
  */
-interface GitHubService {
+public interface GitHubService {
 
 
     @GET("/users")

@@ -8,6 +8,8 @@ import com.example.waleed.mvi.R
 import com.example.waleed.mvi.pojos.GitHubUser
 import com.example.waleed.mvi.repositories.github.GitHubRepository
 import com.example.waleed.mvi.repositories.github.GitHubServiceGenerator
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainViewContract {
@@ -18,34 +20,45 @@ class MainActivity : AppCompatActivity(), MainViewContract {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = MainPresenter(this, GitHubRepository.getInstance(GitHubServiceGenerator.gitHubService("https://api.github.com")))
-        button.setOnClickListener { presenter.loadData() }
+
+    }
+
+    override fun render(viewState: MainViewState) {
+
+        with(viewState) {
+            showProgress(viewState.progress)
+            showError(viewState.error)
+            showData(viewState.data)
+        }
+    }
+
+    override fun buttonClick(): Observable<Boolean> =
+            RxView.clicks(button).map { true }
+
+
+    private fun showProgress(boolean: Boolean) {
+        if (boolean)
+            visible(progressBar)
+        else
+            gone(progressBar)
     }
 
 
-    override fun showProgress() {
-        visible(progressBar)
+    private fun showError(boolean: Boolean) {
+        if (boolean)
+            visible(textView)
+        else
+            gone(textView)
     }
 
-    override fun hideProgress() {
-        gone(progressBar)
-    }
 
-    override fun showError() {
-        visible(textView)
-    }
-
-    override fun hideError() {
-        gone(textView)
-    }
-
-    override fun showData(listOf: MutableList<GitHubUser>) {
+    private fun showData(listOf: List<GitHubUser>) {
         visible(recyclerView)
         recyclerView.adapter = MainAdapter(listOf)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
     }
 
-    override fun hideData() {
+    private fun hideData() {
         gone(recyclerView)
     }
 

@@ -1,5 +1,6 @@
 package com.example.waleed.mvi.repositories.github;
 
+import com.example.waleed.mvi.main.PartialViewState;
 import com.example.waleed.mvi.pojos.GitHubUser;
 import com.example.waleed.mvi.pojos.GitHubUserRepository;
 
@@ -13,6 +14,7 @@ import io.reactivex.Observable;
 
 interface GitHubRepositoryDataSource {
 
+//    Observable<PartialViewState> getUsers();
     Observable<List<GitHubUser>> getUsers();
 
     Observable<List<GitHubUserRepository>> getRepositories(String usename);
