@@ -9,13 +9,7 @@ import io.reactivex.Observable
  * Created by waleed on 22/07/2017.
  */
 
-class GitHubRepository private constructor(gitHubService: GitHubService) : GitHubRepositoryDataSource {
-
-    private val remoteGitHubRepository: GitHubRepositoryDataSource
-
-    init {
-        remoteGitHubRepository = RemoteGitHubRepository(gitHubService)
-    }
+class GitHubRepository private constructor(val remoteGitHubRepository: GitHubRepositoryDataSource) : GitHubRepositoryDataSource {
 
 
     override fun getUsers(): Observable<List<GitHubUser>> {
@@ -31,9 +25,12 @@ class GitHubRepository private constructor(gitHubService: GitHubService) : GitHu
         private var INSTANCE: GitHubRepository? = null
 
 
-        fun getInstance(gitHubService: GitHubService): GitHubRepository {
+        fun getInstance(remoteGitHubRepository: GitHubRepositoryDataSource): GitHubRepository {
+//            if(remoteGitHubRepository !is RemoteGitHubRepository){
+//                throw  RuntimeException("Please add RemoteGitHubRepository.class ")
+//            }
             if (INSTANCE == null)
-                INSTANCE = GitHubRepository(gitHubService)
+                INSTANCE = GitHubRepository(remoteGitHubRepository)
             return INSTANCE as GitHubRepository
         }
     }

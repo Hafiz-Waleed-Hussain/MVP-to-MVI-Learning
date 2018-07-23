@@ -8,6 +8,7 @@ import com.example.waleed.mvi.R
 import com.example.waleed.mvi.pojos.GitHubUser
 import com.example.waleed.mvi.repositories.github.GitHubRepository
 import com.example.waleed.mvi.repositories.github.GitHubServiceGenerator
+import com.example.waleed.mvi.repositories.github.RemoteGitHubRepository
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainViewContract {
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity(), MainViewContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = MainPresenter(this, GitHubRepository.getInstance(GitHubServiceGenerator.gitHubService("https://api.github.com")))
+        presenter = MainPresenter(this, GitHubRepository.getInstance(RemoteGitHubRepository(GitHubServiceGenerator.gitHubService("https://api.github.com"))))
         button.setOnClickListener { presenter.loadData() }
     }
 
