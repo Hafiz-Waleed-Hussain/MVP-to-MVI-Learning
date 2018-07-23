@@ -1,6 +1,5 @@
 package com.example.waleed.mvi.main
 
-import com.example.waleed.mvi.pojos.GitHubUserRepository
 import com.example.waleed.mvi.repositories.github.GitHubRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -9,17 +8,16 @@ class MainPresenter(private val view: MainViewContract, private val repo: GitHub
 
     override fun loadData() {
 
-        view.showProgress()
-        view.hideData()
-        view.hideError()
-        repo.users.observeOn(AndroidSchedulers.mainThread())
+        view.showProgress(true)
+        view.showError(false)
+        repo.getUsers().observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     view.showData(it)
-                    view.hideProgress()
+                    view.showProgress(false)
                 }, {
-                    view.showError()
-                    view.hideProgress()
+                    view.showError(true)
+                    view.showProgress(false)
                 })
     }
 
