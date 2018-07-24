@@ -31,7 +31,7 @@ class MainPresenterTest {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
 
         MockitoAnnotations.initMocks(this)
-        presenter = MainPresenter(view, repo)
+        presenter = MainViewModel(view, repo)
         Mockito.`when`(repo.getUsers()).thenReturn(Observable.empty())
     }
 

@@ -1,5 +1,6 @@
 package com.example.waleed.mvi.repositories.github
 
+import com.example.waleed.mvi.main.PartialViewState
 import com.example.waleed.mvi.pojos.GitHubUser
 import com.example.waleed.mvi.pojos.GitHubUserRepository
 
@@ -12,7 +13,7 @@ import io.reactivex.Observable
 class GitHubRepository private constructor(val remoteGitHubRepository: GitHubRepositoryDataSource) : GitHubRepositoryDataSource {
 
 
-    override fun getUsers(): Observable<List<GitHubUser>> {
+    override fun getUsers(): Observable<PartialViewState> {
         return remoteGitHubRepository.getUsers()
     }
 

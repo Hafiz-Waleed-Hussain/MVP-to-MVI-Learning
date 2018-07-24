@@ -1,5 +1,6 @@
 package com.example.waleed.mvi.main
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -9,35 +10,60 @@ import com.example.waleed.mvi.pojos.GitHubUser
 import com.example.waleed.mvi.repositories.github.GitHubRepository
 import com.example.waleed.mvi.repositories.github.GitHubServiceGenerator
 import com.example.waleed.mvi.repositories.github.RemoteGitHubRepository
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainViewContract {
 
-    private lateinit var presenter: MainActionContract
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = MainPresenter(this, GitHubRepository.getInstance(RemoteGitHubRepository(GitHubServiceGenerator.gitHubService("https://api.github.com"))))
-        button.setOnClickListener { presenter.loadData() }
+        mainViewModel = ViewModelProviders.of(this,
+                MainViewModelFactory(GitHubRepository.getInstance(RemoteGitHubRepository(
+                        GitHubServiceGenerator.gitHubService("https://api.github.com")))))
+                .get(MainViewModel::class.java)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mainViewModel.bind(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mainViewModel.unbind()
+    }
+
+    override fun buttonIntent(): Observable<Boolean> = RxView.clicks(button).map { true }
+
+    override fun render(mainViewState: MainViewState) {
+        with(mainViewState) {
+            showProgress(progress)
+            showError(error)
+            showData(data)
+        }
     }
 
 
-    override fun showProgress(boolean: Boolean) {
+    private fun showProgress(boolean: Boolean) {
         if (boolean)
             visible(progressBar)
         else
             gone(progressBar)
     }
 
-    override fun showError(boolean: Boolean) {
+    private fun showError(boolean: Boolean) {
         if (boolean)
             visible(textView)
         else
             gone(textView)
     }
 
-    override fun showData(listOf: List<GitHubUser>) {
+    private fun showData(listOf: List<GitHubUser>) {
         visible(recyclerView)
         recyclerView.adapter = MainAdapter(listOf)
         recyclerView.layoutManager = LinearLayoutManager(this)
