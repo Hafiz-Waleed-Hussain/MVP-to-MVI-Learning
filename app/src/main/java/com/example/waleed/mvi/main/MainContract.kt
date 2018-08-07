@@ -11,16 +11,13 @@ data class MainViewState(val hideSwipeToRefresh: Boolean = false,
 
 
 sealed class MainViewIntent {
-
     object LoadData : MainViewIntent()
     object SwipeToRefresh : MainViewIntent()
-
 }
 
-sealed class MainViewAction {
-
-    object LoadData : MainViewAction()
-    object SwipeToRefresh : MainViewAction()
+sealed class MainAction {
+    object Error : MainAction()
+    object Progress : MainAction()
 
 }
 
@@ -35,8 +32,8 @@ interface MainView {
 
 interface MainActionContract {
 
-    fun processIntent(mainViewIntent: MainViewIntent)
+    fun processIntent(intents: Observable<MainViewIntent>)
 
-    fun reduce(mainViewAction: MainViewAction): MainViewState
+    fun reduce(mainViewAction: MainAction): MainViewState
 
 }
