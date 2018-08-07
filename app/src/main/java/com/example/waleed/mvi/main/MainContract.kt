@@ -6,10 +6,11 @@ interface MainViewContract {
     fun showProgress(b: Boolean)
     fun showError(b: Boolean)
     fun showData(listOf: List<GitHubUser>)
+    fun hideSwipeToRefresh()
 }
 
 interface MainActionContract {
 
-    fun loadData()
+    fun loadData(isSwipeRefresh: Boolean = false)
 
 }

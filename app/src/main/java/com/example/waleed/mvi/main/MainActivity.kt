@@ -20,6 +20,9 @@ class MainActivity : AppCompatActivity(), MainViewContract {
         setContentView(R.layout.activity_main)
         presenter = MainPresenter(this, GitHubRepository.getInstance(RemoteGitHubRepository(GitHubServiceGenerator.gitHubService("https://api.github.com"))))
         button.setOnClickListener { presenter.loadData() }
+        swipeToRefresh.setOnRefreshListener {
+            presenter.loadData(true)
+        }
     }
 
 
@@ -42,6 +45,11 @@ class MainActivity : AppCompatActivity(), MainViewContract {
         recyclerView.adapter = MainAdapter(listOf)
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
+
+    override fun hideSwipeToRefresh() {
+        swipeToRefresh.isRefreshing = false
+    }
+
 
 
     private inline fun visible(view: View) {
