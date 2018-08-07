@@ -14,13 +14,13 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
-class MainPresenterTest {
+class MainViewModelTest {
 
     @Mock
     lateinit var repo: GitHubRepositoryDataSource
 
     @Mock
-    lateinit var view: MainViewContract
+    lateinit var view: MainView
 
     private lateinit var presenter: MainActionContract
 
@@ -31,7 +31,7 @@ class MainPresenterTest {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
 
         MockitoAnnotations.initMocks(this)
-        presenter = MainPresenter(view, repo)
+        presenter = MainViewModel(view, repo)
         Mockito.`when`(repo.getUsers()).thenReturn(Observable.empty())
     }
 
